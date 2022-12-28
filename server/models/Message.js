@@ -1,7 +1,10 @@
 const { Schema } = require("mongoose");
 
-const messageSchema = {
-  message: { type: String, req: true },
-  created_at: { type: Date, default: Date.now },
-};
+const messageSchema = new Schema(
+  {
+    message: { type: String, req: true },
+    sentBy: { type: Schema.Types.ObjectId, req: true },
+  },
+  { timestamps: true }
+);
 module.exports = messageSchema;
