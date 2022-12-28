@@ -15,6 +15,7 @@ scalar DateTime
     _id: ID
     message: String
     sentBy: User
+    sentByUsername: String
     createdAt: DateTime
     updatedAt: DateTime
   }
@@ -32,7 +33,7 @@ scalar DateTime
     addUser(username: String!, email: String!, password: String!): User
     addFriend(from: ID!, to: ID!): User
     createChat(users: [ID!]): Chat
-    sendMessage(chatId: ID!, message: String!, sentBy: ID!): Chat
+    sendMessage(chatId: ID!, message: String!, sentBy: ID! sentByUsername: String): Chat
   }
 `;
 module.exports = typeDefs;

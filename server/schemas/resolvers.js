@@ -41,11 +41,18 @@ const resolvers = {
             })
             return newChat;
         },
-        sendMessage: async (parent, { chatId, message, sentBy }) => {
+        sendMessage: async (parent, { chatId, message, sentBy, sentByUsername }) => {
+            let username = sentByUsername
+            if (!username) {
+                username = await User.findById(sentBy).username
+
+            }
+
             const newMessage = await Chat.findByIdAndUpdate(chatId, {
-                $push: { messages: { message, sentBy } },
+                $push: { messages: { message, sentBy, sentByUsername: username } },
             })
-            console.log(newMessage.messages)
+
+
             return newMessage
         },
     },
