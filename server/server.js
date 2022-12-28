@@ -1,4 +1,4 @@
-const { urlencoded } = require("express");
+
 const { ApolloServer } = require('apollo-server-express')
 const express = require("express");
 const db = require("./config/connection");
@@ -22,7 +22,6 @@ const startApolloServer = async (typeDefs, resolvers) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
   });
 
-  //app.use(routes);
 
   db.once('open', () => {
     app.listen(PORT, () =>

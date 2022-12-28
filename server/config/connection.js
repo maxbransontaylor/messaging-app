@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/messaging-app"
+  process.env.MONGODB_URI || "mongodb://localhost/messaging-app1"
 );
 
 module.exports = mongoose.connection;

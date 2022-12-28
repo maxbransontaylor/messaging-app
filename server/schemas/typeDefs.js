@@ -1,6 +1,9 @@
 const { gql } = require("apollo-server-express");
+const { DateTime } = require('graphql-scalars')
+
 
 const typeDefs = gql`
+scalar DateTime
   type User {
     _id: ID
     username: String
@@ -12,14 +15,14 @@ const typeDefs = gql`
     _id: ID
     message: String
     sentBy: User
-    createdAt: Int
-    updatedAt: Int
+    createdAt: DateTime
+    updatedAt: DateTime
   }
   type Chat {
     _id: ID
     users: [User]
     messages: [Message]
-    updatedAt: Int
+    updatedAt: DateTime
   }
   type Query {
     users: [User]
