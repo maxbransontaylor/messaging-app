@@ -34,9 +34,14 @@ const resolvers = {
             return { friendA, friendB };
         },
         createChat: async (parent, { users }) => {
+            const chatExists = await Chat.find({ users: users })
+            if (chatExists && chatExists.length) {
+
+                return chatExists
+            }
             const newChat = await Chat.create({ users });
             users.forEach(async (user) => {
-                const updatedUser = await User.findOneAndUpdate({ _id: user }, { $push: { chats: newChat._id } })
+                await User.findOneAndUpdate({ _id: user }, { $push: { chats: newChat._id } })
 
             })
             return newChat;
