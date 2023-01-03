@@ -18,7 +18,7 @@ const userSchema = new Schema({
         required: true,
         minlength: 8,
     },
-    friends: [{ type: Schema.Types.ObjectId, ref: "user" }],
+    friends: [{ userId: { type: Schema.Types.ObjectId, ref: "user", unique: true }, status: { type: String, enum: ['sent', 'received', 'accepted', 'declined'] } }],
     chats: [{
         type: Schema.Types.ObjectId,
         ref: "chat",

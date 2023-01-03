@@ -8,8 +8,12 @@ scalar DateTime
     _id: ID
     username: String
     email: String
-    friends: [User]
+    friends: [Friend]
     chats: [Chat]
+  }
+  type Friend {
+    userId: ID
+    status: String
   }
   type Message {
     _id: ID
@@ -32,6 +36,7 @@ scalar DateTime
   type Mutation {
     addUser(username: String!, email: String!, password: String!): User
     addFriend(from: ID!, to: ID!): User
+    confirmFriend(from: ID, to: ID): User
     createChat(users: [ID!]): Chat
     sendMessage(chatId: ID!, message: String!, sentBy: ID! sentByUsername: String): Chat
   }

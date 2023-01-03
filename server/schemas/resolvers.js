@@ -25,15 +25,23 @@ const resolvers = {
         addFriend: async (parent, { from, to }) => {
             const friendA = await User.update(
                 { _id: from },
-                { $push: { friends: to } }
+                { $push: { friends: { userId: to, status: 'sent' } } }, { new: true }
             );
             const friendB = await User.update(
                 { _id: to },
-                { $push: { friends: from } }
+                { $push: { friends: { userId: from, status: 'received' } } }, { new: true }
             );
-            return { friendA, friendB };
+            console.log(friendA)
+            return friendA;
+        },
+        confirmFriend: async (parent, { from, to }) => {
+            const sender = await User.updateOne({ 'friends.userId': to }, { '$set': { 'friends.$.status': 'accepted' } }, { new: true })
+            const receiver = await User.updateOne({ 'friends.userId': from }, { '$set': { 'friends.$.status': 'accepted' } }, { new: true })
+            console.log(sender, receiver)
+            return sender
         },
         createChat: async (parent, { users }) => {
+            // check if a chat with these users already exists
             const chatExists = await Chat.find({ users: users })
             if (chatExists && chatExists.length) {
 
@@ -47,9 +55,9 @@ const resolvers = {
             return newChat;
         },
         sendMessage: async (parent, { chatId, message, sentBy }) => {
-            console.log(sentBy)
+            //get username by id
             const user = await User.findById(sentBy)
-            console.log(user)
+
 
             const newMessage = await Chat.findByIdAndUpdate(chatId, {
                 $push: { messages: { message, sentBy, sentByUsername: user.username } }
