@@ -39,15 +39,10 @@ const typeDefs = gql`
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    addFriend(from: ID!, to: ID!): User
-    confirmFriend(from: ID, to: ID): User
+    addFriend(to: ID!): User
+    confirmFriend(to: ID): User
     createChat(users: [ID!]): Chat
-    sendMessage(
-      chatId: ID!
-      message: String!
-      sentBy: ID!
-      sentByUsername: String
-    ): Chat
+    sendMessage(chatId: ID!, message: String!): Chat
   }
 `;
 module.exports = typeDefs;

@@ -1,6 +1,7 @@
 const { User, Chat } = require("../models");
 const { GraphQLError } = require("graphql");
 const { signToken } = require("../utils/auth");
+const { AuthenticationError } = require("apollo-server-express");
 const resolvers = {
   Query: {
     users: async () => {
@@ -37,19 +38,24 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    addFriend: async (parent, { from, to }) => {
+    addFriend: async (parent, { to }, context) => {
+      if (!context.user) {
+        throw AuthenticationError("Not Logged In");
+      }
+      const from = context.user._id;
+
       // see if already friends or already requested
       try {
         const checkForExisting = await User.findById(to);
         if (
-          checkForExisting.friends.some((friend) => friend.userId.equals(to))
+          checkForExisting.friends.some((friend) => friend.userId.equals(from))
             .length
         ) {
           throw new GraphQLError("ALREADY FRIENDS OR ALREADY REQUESTED", {
             extensions: { code: "DUPLICATE_FRIEND_ENTRY" },
           });
         }
-        const updateFriendA = await User.updateOne(
+        const updateFriendA = await User.findOneAndUpdate(
           { _id: from, "friends.userId": { $ne: to } },
           { $push: { friends: { userId: to, status: "sent" } } },
           { new: true }
@@ -67,16 +73,11 @@ const resolvers = {
         });
       }
     },
-    confirmFriend: async (parent, { from, to }) => {
+    confirmFriend: async (parent, { to }) => {
       const sendingUser = await User.findById(from);
       //   check that the user confirming the request is the one who received it
-
       const hasRequest = sendingUser.friends.filter((friend) => {
-        if (friend.userId.equals(to) && friend.status === "received") {
-          return true;
-        } else {
-          return false;
-        }
+        friend.userId.equals(to) && friend.status === "received" ? true : false;
       });
 
       if (!hasRequest.length) {
@@ -85,26 +86,44 @@ const resolvers = {
         });
       }
       // update each friend list to be accepted
-      const updateSender = await User.updateOne(
-        { "friends.userId": to },
+      const updateSender = await User.findOneAndUpdate(
+        { _id: from, "friends.userId": to },
         { $set: { "friends.$.status": "accepted" } },
         { new: true }
       );
       const updateReceiver = await User.updateOne(
-        { "friends.userId": from },
+        { _id: to, "friends.userId": from },
         { $set: { "friends.$.status": "accepted" } },
         { new: true }
       );
 
       return updateSender;
     },
-    createChat: async (parent, { users }) => {
-      // check if a chat with these users already exists
-      const chatExists = await Chat.find({ users: users });
-      if (chatExists && chatExists.length) {
-        throw new GraphQLError("CHAT EXISTS WITH THIS USER(S) ");
+    createChat: async (parent, { users }, context) => {
+      if (!context.user) {
+        throw AuthenticationError("Not Logged In");
       }
-      // check if user creating chat is friends with everybody in chat
+      const addedUsers = users;
+      users.push(context.user._id);
+
+      // check if a chat with these users already exists
+      // const chatExists = await Chat.find({ users: users });
+      // if (chatExists.length) {
+      //   throw new GraphQLError("CHAT EXISTS WITH THIS USER(S) ");
+      // }
+      // check if user creating the chat is friends with everybody in chat
+      const userCreating = await User.findById(context.user._id);
+      const notFriends = addedUsers.filter((userId) => {
+        // if a user is on the friends list AND accepted, do NOT add to the notFriends Array lol
+        const filtering = userCreating.friends.filter((f) => {
+          f.userId.equals(userId) && f.status === "accepted" ? true : false;
+        });
+        console.log(filtering);
+      });
+
+      if (notFriends.length) {
+        throw new GraphQLError("NOT FRIENDS WITH ALL USERS");
+      }
       const newChat = await Chat.create({ users });
       users.forEach(async (user) => {
         await User.findOneAndUpdate(
