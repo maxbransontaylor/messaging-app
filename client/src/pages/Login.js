@@ -41,7 +41,7 @@ function Login() {
   const [signUp, setSignup] = useState(false);
 
   if (signUp) {
-    return <SignUp />;
+    return <SignUp setSignup={setSignup} />;
   }
 
   return (
@@ -93,7 +93,11 @@ function Login() {
           </Button>
           <Grid container>
             <Grid item>
-              <Link onClick={() => setSignup(true)} variant="body2">
+              <Link
+                style={{ cursor: "pointer" }}
+                onClick={() => setSignup(true)}
+                variant="body2"
+              >
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
