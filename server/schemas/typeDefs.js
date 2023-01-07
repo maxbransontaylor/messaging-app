@@ -1,15 +1,18 @@
 const { gql } = require("apollo-server-express");
-const { DateTime } = require('graphql-scalars')
-
+const { DateTime } = require("graphql-scalars");
 
 const typeDefs = gql`
-scalar DateTime
+  scalar DateTime
   type User {
     _id: ID
     username: String
     email: String
     friends: [Friend]
     chats: [Chat]
+  }
+  type Auth {
+    token: ID!
+    user: User
   }
   type Friend {
     userId: ID
@@ -34,11 +37,17 @@ scalar DateTime
     me(userId: ID!): User
   }
   type Mutation {
-    addUser(username: String!, email: String!, password: String!): User
+    addUser(username: String!, email: String!, password: String!): Auth
+    login(email: String!, password: String!): Auth
     addFriend(from: ID!, to: ID!): User
     confirmFriend(from: ID, to: ID): User
     createChat(users: [ID!]): Chat
-    sendMessage(chatId: ID!, message: String!, sentBy: ID! sentByUsername: String): Chat
+    sendMessage(
+      chatId: ID!
+      message: String!
+      sentBy: ID!
+      sentByUsername: String
+    ): Chat
   }
 `;
 module.exports = typeDefs;
