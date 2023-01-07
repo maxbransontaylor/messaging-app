@@ -31,7 +31,7 @@ const resolvers = {
       const user = await User.findOne({ email });
 
       const correctPassword = await user.isCorrectPassword(password);
-      console.log(user, correctPassword);
+
       if (!user || !correctPassword) {
         throw new GraphQLError("COULD NOT FIND USER WITH THESE CREDENTIALS");
       }
@@ -73,11 +73,17 @@ const resolvers = {
         });
       }
     },
-    confirmFriend: async (parent, { to }) => {
+    confirmFriend: async (parent, { to }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("NOT LOGGED IN");
+      }
+      const from = context.user._id;
       const sendingUser = await User.findById(from);
       //   check that the user confirming the request is the one who received it
       const hasRequest = sendingUser.friends.filter((friend) => {
-        friend.userId.equals(to) && friend.status === "received" ? true : false;
+        return friend.userId.equals(to) && friend.status === "received"
+          ? true
+          : false;
       });
 
       if (!hasRequest.length) {
@@ -103,27 +109,30 @@ const resolvers = {
       if (!context.user) {
         throw AuthenticationError("Not Logged In");
       }
-      const addedUsers = users;
+      // create a copy of users array without logged in user
+      const addedUsers = users.slice(0);
+
       users.push(context.user._id);
 
       // check if a chat with these users already exists
-      // const chatExists = await Chat.find({ users: users });
-      // if (chatExists.length) {
-      //   throw new GraphQLError("CHAT EXISTS WITH THIS USER(S) ");
-      // }
+      const chatExists = await Chat.findOne({ users: users });
+      if (chatExists) {
+        console.log(chatExists);
+        return chatExists;
+      }
       // check if user creating the chat is friends with everybody in chat
       const userCreating = await User.findById(context.user._id);
-      const notFriends = addedUsers.filter((userId) => {
-        // if a user is on the friends list AND accepted, do NOT add to the notFriends Array lol
-        const filtering = userCreating.friends.filter((f) => {
-          f.userId.equals(userId) && f.status === "accepted" ? true : false;
-        });
-        console.log(filtering);
+      addedUsers.forEach((user) => {
+        const friendIdArr = userCreating.friends.reduce((arr, friend) => {
+          friend.status = "accepted" && arr.push(friend.userId.toString());
+          return arr;
+        }, []);
+
+        if (friendIdArr.indexOf(user) === -1) {
+          throw new GraphQLError("NOT FRIENDS WITH ALL USERS");
+        }
       });
 
-      if (notFriends.length) {
-        throw new GraphQLError("NOT FRIENDS WITH ALL USERS");
-      }
       const newChat = await Chat.create({ users });
       users.forEach(async (user) => {
         await User.findOneAndUpdate(
@@ -147,7 +156,6 @@ const resolvers = {
         { new: true }
       );
 
-      console.log(newMessage);
       return newMessage;
     },
   },
