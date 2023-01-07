@@ -142,7 +142,9 @@ const resolvers = {
       });
       return newChat;
     },
-    sendMessage: async (parent, { chatId, message, sentBy }) => {
+    sendMessage: async (parent, { chatId, message }, context) => {
+      if (!context.user) throw new AuthenticationError("NOT LOGGED IN");
+      const sentBy = context.user._id;
       //get username by id
       const user = await User.findById(sentBy);
 
