@@ -8,15 +8,15 @@ import { useQuery } from "@apollo/client";
 import { ME } from "../utils/queries";
 function Home({ setLoggedIn }) {
   const [showFriendPage, setShowFriendPage] = useState(false);
-  const { loading, data: me } = useQuery(ME);
-  console.log(me);
+  const { loading, data } = useQuery(ME);
+  const { me } = data;
   //   determine what is to be displayed
   const getContent = () => {
     if (loading) {
       return <div>Loading...</div>;
     }
     if (showFriendPage) {
-      return <FriendDash />;
+      return <FriendDash me={me._id} friends={me.friends} />;
     } else {
       return <ChatDash />;
     }

@@ -1,6 +1,6 @@
 import React from "react";
 
 function FriendDash() {
-  return <div>Friend Dash</div>;
+  return;
 }
 export default FriendDash;
