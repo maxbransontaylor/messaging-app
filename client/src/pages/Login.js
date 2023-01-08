@@ -30,7 +30,7 @@ function Copyright(props) {
   );
 }
 
-function Login() {
+function Login({ setLoggedIn }) {
   const [login, { error }] = useMutation(LOGIN);
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -40,11 +40,12 @@ function Login() {
     });
 
     auth.login(userData.login.token);
+    setLoggedIn(true);
   };
   const [signUp, setSignup] = useState(false);
 
   if (signUp) {
-    return <SignUp setSignup={setSignup} />;
+    return <SignUp setLoggedIn={setLoggedIn} setSignup={setSignup} />;
   }
 
   return (
