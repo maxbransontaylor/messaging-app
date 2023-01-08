@@ -6,11 +6,12 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import SignUp from "./Signup";
-
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "../utils/mutations";
+import auth from "../utils/auth";
 function Copyright(props) {
   return (
     <Typography
@@ -30,13 +31,15 @@ function Copyright(props) {
 }
 
 function Login() {
-  const handleSubmit = (event) => {
+  const [login, { error }] = useMutation(LOGIN);
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+    const { data: userData } = await login({
+      variables: { email: data.get("email"), password: data.get("password") },
     });
+
+    auth.login(userData.login.token);
   };
   const [signUp, setSignup] = useState(false);
 
@@ -55,9 +58,6 @@ function Login() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
