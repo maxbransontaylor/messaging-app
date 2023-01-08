@@ -3,8 +3,8 @@ import { React, useState } from "react";
 import ChatIcon from "@mui/icons-material/Chat";
 import PeopleIcon from "@mui/icons-material/People";
 
-function Footer() {
-  const [value, setValue] = useState("");
+function Nav({ setShowFriendPage }) {
+  const [value, setValue] = useState(0);
   return (
     <Grid>
       <BottomNavigation
@@ -12,6 +12,7 @@ function Footer() {
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue);
+          newValue === 0 ? setShowFriendPage(false) : setShowFriendPage(true);
         }}
       >
         <BottomNavigationAction label="Chats" icon={<ChatIcon />} />
@@ -21,4 +22,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default Nav;

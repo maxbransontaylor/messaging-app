@@ -8,7 +8,12 @@ const resolvers = {
       const users = await User.find({});
       return users;
     },
-    me: async (parent, { userId }) => {
+    me: async (parent, data, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("NOT LOGGED IN");
+      }
+      const userId = context.user._id;
+
       const me = await User.findById(userId).populate({
         path: "chats",
         populate: { path: "messages" },

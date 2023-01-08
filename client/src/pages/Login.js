@@ -12,23 +12,6 @@ import SignUp from "./Signup";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../utils/mutations";
 import auth from "../utils/auth";
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Free Message
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 function Login({ setLoggedIn }) {
   const [login, { error }] = useMutation(LOGIN);
@@ -105,7 +88,6 @@ function Login({ setLoggedIn }) {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );
 }

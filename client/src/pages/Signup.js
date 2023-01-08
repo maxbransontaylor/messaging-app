@@ -9,33 +9,23 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Free Message
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-function SignUp({ setSignup }) {
-  const handleSubmit = (event) => {
+import { useMutation } from "@apollo/client";
+import { SIGN_UP } from "../utils/mutations";
+import auth from "../utils/auth";
+function SignUp({ setSignup, setLoggedIn }) {
+  const [signup, { error }] = useMutation(SIGN_UP);
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+    const { data: userData } = await signup({
+      variables: {
+        username: data.get("username"),
+        email: data.get("email"),
+        password: data.get("password"),
+      },
     });
+    auth.login(userData.addUser.token);
+    setLoggedIn(true);
   };
 
   return (
@@ -111,7 +101,6 @@ function SignUp({ setSignup }) {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }

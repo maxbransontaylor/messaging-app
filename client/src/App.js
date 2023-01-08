@@ -17,7 +17,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 // import components
 import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Footer from "./components/Nav";
 // apollo client init
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -56,7 +56,7 @@ function App() {
           container
           height="100vh"
           flexDirection="column"
-          justifyContent="center"
+          justifyContent="space-between"
           alignItems="center"
         >
           <Header />
@@ -66,7 +66,6 @@ function App() {
           ) : (
             <Login setLoggedIn={setLoggedIn} />
           )}
-          <Footer />
         </Grid>
       </ThemeProvider>
     </ApolloProvider>
