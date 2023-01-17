@@ -1,6 +1,7 @@
+import { Box } from "@mui/material";
 import React from "react";
 
 function ChatDash() {
-  return <div>Chat Dash</div>;
+  return <Box sx={{ flexGrow: 1 }}>Chat Dash</Box>;
 }
 export default ChatDash;

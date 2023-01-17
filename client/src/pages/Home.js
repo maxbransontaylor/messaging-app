@@ -9,22 +9,23 @@ import { ME } from "../utils/queries";
 function Home({ setLoggedIn }) {
   const [showFriendPage, setShowFriendPage] = useState(false);
   const { loading, data } = useQuery(ME);
-  const { me } = data;
+  const me = data?.me;
   //   determine what is to be displayed
   const getContent = () => {
     if (loading) {
       return <div>Loading...</div>;
     }
-    if (showFriendPage) {
+    if (showFriendPage && me) {
       return <FriendDash me={me._id} friends={me.friends} />;
     } else {
       return <ChatDash />;
     }
   };
   return (
-    <Box container="true" sx={{ width: "70%", minWidth: "300px" }}>
-      <Paper>
-        <Grid sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Box sx={{ width: 'inherit', height: '100vh' }}>
+      <Paper sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button
             onClick={() => {
               localStorage.removeItem("id_token");
@@ -36,9 +37,10 @@ function Home({ setLoggedIn }) {
           <Button>
             <BorderColorSharpIcon></BorderColorSharpIcon>
           </Button>
-        </Grid>
+        </Box>
         {getContent()}
         <Nav setShowFriendPage={setShowFriendPage} />
+
       </Paper>
     </Box>
   );

@@ -8,7 +8,7 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { Container, CssBaseline, Grid } from "@mui/material";
+import { Container, CssBaseline, Box } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 //import utils
 import Auth from "./utils/auth";
@@ -52,23 +52,25 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <Grid
+        <Box
           container
           height="100vh"
           flexDirection="column"
-          justifyContent="space-between"
+          justifyContent="center"
           alignItems="center"
         >
-          <Header />
-          <CssBaseline />
-          {isLoggedIn ? (
-            <Home setLoggedIn={setLoggedIn} />
-          ) : (
-            <Login setLoggedIn={setLoggedIn} />
-          )}
-        </Grid>
+          <Container maxWidth='sm' sx={{ p: 0 }}>
+            <CssBaseline />
+            <Header />
+            {isLoggedIn ? (
+              <Home setLoggedIn={setLoggedIn} />
+            ) : (
+              <Login setLoggedIn={setLoggedIn} />
+            )}
+          </Container>
+        </Box>
       </ThemeProvider>
-    </ApolloProvider>
+    </ApolloProvider >
   );
 }
 

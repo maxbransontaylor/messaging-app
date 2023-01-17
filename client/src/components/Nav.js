@@ -1,4 +1,4 @@
-import { BottomNavigationAction, BottomNavigation, Grid } from "@mui/material";
+import { BottomNavigationAction, BottomNavigation, Box } from "@mui/material";
 import { React, useState } from "react";
 import ChatIcon from "@mui/icons-material/Chat";
 import PeopleIcon from "@mui/icons-material/People";
@@ -6,7 +6,7 @@ import PeopleIcon from "@mui/icons-material/People";
 function Nav({ setShowFriendPage }) {
   const [value, setValue] = useState(0);
   return (
-    <Grid>
+    <Box sx={{ mt: 'auto' }}>
       <BottomNavigation
         showLabels
         value={value}
@@ -18,7 +18,7 @@ function Nav({ setShowFriendPage }) {
         <BottomNavigationAction label="Chats" icon={<ChatIcon />} />
         <BottomNavigationAction label="Friends" icon={<PeopleIcon />} />
       </BottomNavigation>
-    </Grid>
+    </Box>
   );
 }
 
