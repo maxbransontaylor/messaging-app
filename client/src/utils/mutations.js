@@ -31,3 +31,15 @@ export const ADD_FRIEND = gql`
     }
   }
 `;
+
+export const CONFIRM_FRIEND = gql`
+  mutation confirmFriend($to: ID) {
+    confirmFriend(to: $to) {
+      username
+      friends {
+        status
+        userId
+      }
+    }
+  }
+`;

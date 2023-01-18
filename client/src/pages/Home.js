@@ -16,7 +16,9 @@ function Home({ setLoggedIn }) {
       return <div>Loading...</div>;
     }
     if (showFriendPage) {
-      return <FriendDash me={me?._id} friends={me?.friends} />;
+      return (
+        <FriendDash me={me?._id} friends={me?.friends} refetch={refetch} />
+      );
     } else {
       return <ChatDash />;
     }
