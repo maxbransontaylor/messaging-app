@@ -15,17 +15,28 @@ function Home({ setLoggedIn }) {
     if (loading) {
       return <div>Loading...</div>;
     }
-    if (showFriendPage && me) {
-      return <FriendDash me={me._id} friends={me.friends} />;
+    if (showFriendPage) {
+      return <FriendDash me={me?._id} friends={me?.friends} />;
     } else {
       return <ChatDash />;
     }
   };
   return (
-    <Box sx={{ width: 'inherit', height: '100vh' }}>
-      <Paper sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Paper>
+      <Box
+        sx={{
+          width: "inherit",
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Button
             onClick={() => {
               localStorage.removeItem("id_token");
@@ -38,11 +49,10 @@ function Home({ setLoggedIn }) {
             <BorderColorSharpIcon></BorderColorSharpIcon>
           </Button>
         </Box>
-        {getContent()}
+        <Box sx={{ flexGrow: 1 }}>{getContent()}</Box>
         <Nav setShowFriendPage={setShowFriendPage} />
-
-      </Paper>
-    </Box>
+      </Box>
+    </Paper>
   );
 }
 

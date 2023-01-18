@@ -6,7 +6,7 @@ import PeopleIcon from "@mui/icons-material/People";
 function Nav({ setShowFriendPage }) {
   const [value, setValue] = useState(0);
   return (
-    <Box sx={{ mt: 'auto' }}>
+    <Box sx={{ mt: "auto" }}>
       <BottomNavigation
         showLabels
         value={value}

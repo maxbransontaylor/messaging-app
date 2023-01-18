@@ -52,25 +52,23 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <Box
-          container
-          height="100vh"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
+        <CssBaseline />
+
+        <Container
+          maxWidth="sm"
+          sx={{
+            p: 0,
+          }}
         >
-          <Container maxWidth='sm' sx={{ p: 0 }}>
-            <CssBaseline />
-            <Header />
-            {isLoggedIn ? (
-              <Home setLoggedIn={setLoggedIn} />
-            ) : (
-              <Login setLoggedIn={setLoggedIn} />
-            )}
-          </Container>
-        </Box>
+          {!isLoggedIn && <Header />}
+          {isLoggedIn ? (
+            <Home setLoggedIn={setLoggedIn} />
+          ) : (
+            <Login setLoggedIn={setLoggedIn} />
+          )}
+        </Container>
       </ThemeProvider>
-    </ApolloProvider >
+    </ApolloProvider>
   );
 }
 
