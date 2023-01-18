@@ -7,6 +7,8 @@ export const ME = gql`
       username
       friends {
         userId
+        status
+        username
       }
       chats {
         users {

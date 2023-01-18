@@ -17,3 +17,17 @@ export const SIGN_UP = gql`
     }
   }
 `;
+
+export const ADD_FRIEND = gql`
+  mutation addFriend($to: String!) {
+    addFriend(to: $to) {
+      _id
+      username
+      friends {
+        status
+        userId
+        username
+      }
+    }
+  }
+`;

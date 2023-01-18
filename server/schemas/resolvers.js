@@ -35,7 +35,7 @@ const resolvers = {
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
-      const correctPassword = await user.isCorrectPassword(password);
+      const correctPassword = await user?.isCorrectPassword(password);
 
       if (!user || !correctPassword) {
         throw new GraphQLError("COULD NOT FIND USER WITH THESE CREDENTIALS");
@@ -51,7 +51,7 @@ const resolvers = {
 
       // see if already friends or already requested
       try {
-        const checkForExisting = await User.findById(to);
+        const checkForExisting = await User.findOne({ username: to });
         if (
           checkForExisting.friends.some((friend) => friend.userId.equals(from))
             .length
@@ -61,13 +61,29 @@ const resolvers = {
           });
         }
         const updateFriendA = await User.findOneAndUpdate(
-          { _id: from, "friends.userId": { $ne: to } },
-          { $push: { friends: { userId: to, status: "sent" } } },
+          { _id: from, "friends.userId": { $ne: checkForExisting._id } },
+          {
+            $push: {
+              friends: {
+                userId: checkForExisting._id,
+                username: to,
+                status: "sent",
+              },
+            },
+          },
           { new: true }
         );
         const updateFriendB = await User.updateOne(
-          { _id: to, "friends.userId": { $ne: from } },
-          { $push: { friends: { userId: from, status: "received" } } },
+          { _id: checkForExisting._id, "friends.userId": { $ne: from } },
+          {
+            $push: {
+              friends: {
+                userId: from,
+                username: context.user.username,
+                status: "received",
+              },
+            },
+          },
           { new: true }
         );
 

@@ -14,18 +14,24 @@ class AuthService {
   isTokenExpired() {
     try {
       const decoded = this.getDecoded();
-      if (decoded.exp < Date.now()) {
+
+      if (decoded.exp * 1000 < Date.now()) {
         return true;
       } else {
         return false;
       }
     } catch (err) {
+      console.log(err);
       return false;
     }
   }
 
   getDecoded() {
-    return decode(localStorage.getItem("id_token"));
+    const token = localStorage.getItem("id_token") || null;
+    if (token) {
+      return decode(token);
+    }
+    return { exp: 0 };
   }
 
   login(idToken) {

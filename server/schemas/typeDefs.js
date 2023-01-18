@@ -16,6 +16,7 @@ const typeDefs = gql`
   }
   type Friend {
     userId: ID
+    username: String
     status: String
   }
   type Message {
@@ -39,7 +40,7 @@ const typeDefs = gql`
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    addFriend(to: ID!): User
+    addFriend(to: String!): User
     confirmFriend(to: ID): User
     createChat(users: [ID!]): Chat
     sendMessage(chatId: ID!, message: String!): Chat

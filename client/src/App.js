@@ -1,6 +1,6 @@
 import "./App.css";
 // import dependencies
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ApolloClient,
   InMemoryCache,
@@ -48,7 +48,16 @@ const theme = createTheme({
   },
 });
 function App() {
-  const [isLoggedIn, setLoggedIn] = useState(Auth.isTokenExpired());
+  const [isLoggedIn, setLoggedIn] = useState(!Auth.isTokenExpired());
+  useEffect(() => {
+    const expired = Auth.isTokenExpired();
+    if (expired) {
+      console.log("expired");
+      setLoggedIn(false);
+      localStorage.removeItem("id_token");
+    }
+  });
+
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>

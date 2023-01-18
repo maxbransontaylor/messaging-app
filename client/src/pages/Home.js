@@ -1,5 +1,5 @@
-import { Box, Button, Grid, Paper } from "@mui/material";
-import { React, useState } from "react";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import { React, useEffect, useState } from "react";
 import Nav from "../components/Nav";
 import BorderColorSharpIcon from "@mui/icons-material/BorderColorSharp";
 import FriendDash from "../components/FriendDash";
@@ -8,7 +8,7 @@ import { useQuery } from "@apollo/client";
 import { ME } from "../utils/queries";
 function Home({ setLoggedIn }) {
   const [showFriendPage, setShowFriendPage] = useState(false);
-  const { loading, data } = useQuery(ME);
+  const { loading, data, refetch } = useQuery(ME);
   const me = data?.me;
   //   determine what is to be displayed
   const getContent = () => {
@@ -21,6 +21,9 @@ function Home({ setLoggedIn }) {
       return <ChatDash />;
     }
   };
+  useEffect(() => {
+    refetch();
+  });
   return (
     <Paper>
       <Box
@@ -45,6 +48,7 @@ function Home({ setLoggedIn }) {
           >
             Log Out
           </Button>
+          <Typography>{me?.username}</Typography>
           <Button>
             <BorderColorSharpIcon></BorderColorSharpIcon>
           </Button>
